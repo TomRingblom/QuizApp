@@ -1,0 +1,91 @@
+﻿@page "/quiz"
+@using QuizApp.Blazor.Models;
+@using QuizApp.Blazor.Models.Quiz;
+
+<Navbar />
+
+<h1>Quiz Game</h1>
+
+@if(questions == null)
+{
+    <h1>Loading...</h1>
+}
+else
+{
+    if(runGame)
+    {
+        var question = questions
+            .Where(x => x.Id == questionId)
+            .FirstOrDefault();
+
+        if(question != null && question.Options != null)
+        {
+            <h2>@question.Question</h2>
+            foreach (var option in question.Options)
+            {
+                <button @onclick="() => Guess(option, question.Id)">@option</button>
+            }
+        }
+    }
+    else
+    {
+        var result = answers.Where(a => a == true).Count();
+
+        <h2>Resultat: @result/@questions.Count()</h2>
+        <button @onclick="PlayAgain">Spela igen</button>
+    }
+}
+
+@code {
+    private List<QuizQuestion> questions = new()
+    {
+        new QuizQuestion
+        {
+            Id = 1,
+            Question = "Vem är jag?",
+            Options = new List<string> { "Tom", "Otto", "Janne" },
+            CorrectAnswer = "Tom"
+        },
+        new QuizQuestion
+        {
+            Id = 2,
+            Question = "Vilken färg är solen?",
+            Options = new List<string> { "Rosa", "Svart", "Gul" },
+            CorrectAnswer = "Gul"
+        }
+    };
+
+    private int questionId = 1;
+    private bool runGame = true;
+    private List<bool> answers = new();
+
+    private void Guess(string guess, int id)
+    {
+        var isCorrect = questions
+            .Where(x => x.Id == id)
+            .FirstOrDefault()?.CorrectAnswer == guess;
+
+        questionId++;
+
+        if (isCorrect)
+        {
+            answers.Add(true);
+        }
+        else
+        {
+            answers.Add(false);
+        }
+
+        if(answers.Count == questions.Count)
+        {
+            runGame = false;
+        }
+    }
+
+    private void PlayAgain()
+    {
+        questionId = 1;
+        runGame = true;
+        answers = new();
+    }
+}
