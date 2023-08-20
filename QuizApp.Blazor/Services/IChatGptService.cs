@@ -4,7 +4,7 @@ namespace QuizApp.Blazor.Services
 {
     public interface IChatGptService
     {
-        public QuizList QuizFromGpt();
+        public Task<bool> QuizFromGptAsync(string query);
         public bool SaveQuizToJson();
     }
 }
