@@ -97,7 +97,7 @@ namespace QuizApp.Api.Controllers
                 await _dbContext.SaveChangesAsync();
             }
 
-            return Ok(quiz);
+            return Ok(quiz.QuizQuestions);
         }
     }
 }
