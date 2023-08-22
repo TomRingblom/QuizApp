@@ -1,6 +1,6 @@
 ﻿@page "/quiz"
-@using QuizApp.Blazor.Models;
-@using QuizApp.Blazor.Models.Quiz;
+@using QuizApp.Blazor.Services;
+@using QuizApp.Shared.Models.Quiz;
 
 <Navbar />
 
@@ -8,7 +8,15 @@
 
 @if(questions == null)
 {
-    <h1>Loading...</h1>
+    if (loading)
+    {
+        <h1>Loading...</h1>
+    }
+    else
+    {
+        <input @bind="inputValue" />
+        <button @onclick="() => GetQuiz(inputValue)">Get Quiz</button>
+    }
 }
 else
 {
@@ -37,27 +45,42 @@ else
 }
 
 @code {
-    private List<QuizQuestion> questions = new()
-    {
-        new QuizQuestion
-        {
-            Id = 1,
-            Question = "Vem är jag?",
-            Options = new List<string> { "Tom", "Otto", "Janne" },
-            CorrectAnswer = "Tom"
-        },
-        new QuizQuestion
-        {
-            Id = 2,
-            Question = "Vilken färg är solen?",
-            Options = new List<string> { "Rosa", "Svart", "Gul" },
-            CorrectAnswer = "Gul"
-        }
-    };
+    [Inject]
+    public IChatGptService? _chatGptService { get; set; }
+    private IEnumerable<QuizQuestionDto> questions;
 
     private int questionId = 1;
     private bool runGame = true;
+    private bool loading = false;
+    private string inputValue = "";
     private List<bool> answers = new();
+
+    private async void GetQuiz(string input)
+    {
+        loading = true;
+        questions = await _chatGptService.QuizFromGptAsync(input);
+        // var test = 0;
+        // questions = new List<QuizQuestionDto>()
+        // {
+        //     new QuizQuestionDto
+        //     {
+        //         Id = 1,
+        //         Question = "Vem är jag?",
+        //         Options = new List<string> { "Tom", "Otto", "Janne" },
+        //         CorrectAnswer = "Tom"
+        //     },
+        //     new QuizQuestionDto
+        //     {
+        //         Id = 2,
+        //         Question = "Vilken färg är solen?",
+        //         Options = new List<string> { "Rosa", "Svart", "Gul" },
+        //         CorrectAnswer = "Gul"
+        //     }
+        // };
+        runGame = true;
+        loading = false;
+        StateHasChanged();
+    }
 
     private void Guess(string guess, int id)
     {
@@ -76,7 +99,7 @@ else
             answers.Add(false);
         }
 
-        if(answers.Count == questions.Count)
+        if(answers.Count == questions.Count())
         {
             runGame = false;
         }

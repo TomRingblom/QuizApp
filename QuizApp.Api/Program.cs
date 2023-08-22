@@ -1,31 +1,61 @@
 using Microsoft.EntityFrameworkCore;
+using QuizApp.Api.Configuration.Options;
 using QuizApp.Api.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 
-// Add services to the container.
 
 services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+services.AddRazorPages();
+services.AddControllersWithViews();
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
-services.AddDbContext<QuizDbContext>(x => x.UseSqlServer(configuration.GetConnectionString("QuizDb")));
+services.AddRouting(o => o.LowercaseUrls = true);
+services.AddDbContext<QuizDbContext>(x => x
+    .UseSqlServer(configuration.GetConnectionString("QuizDb")));
+
+services.AddHttpClient("ChatGptClient", client =>
+{
+    client.BaseAddress = new Uri("https://api.openai.com/v1/completions");
+});
+services.Configure<ChatGptOptions>(
+                options => configuration.GetSection(ChatGptOptions.ChatGpt)
+                    .Bind(options));
+
+//services.AddCors(options =>
+//{
+//    options.AddPolicy("Open", builder => builder
+//        .AllowAnyOrigin()
+//        .AllowAnyHeader()
+//        .AllowAnyMethod());
+//});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseWebAssemblyDebugging();
 }
 
+app.UseSwagger();
+app.UseSwaggerUI();
+
+app.UseBlazorFrameworkFiles();
 app.UseHttpsRedirection();
+
+app.UseStaticFiles();
+
+app.UseRouting();
 
 app.UseAuthorization();
 
+app.UseCors("Open");
+
 app.MapControllers();
+
+app.MapFallbackToFile("index.html");
 
 app.Run();

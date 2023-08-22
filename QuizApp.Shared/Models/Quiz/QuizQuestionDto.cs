@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 
-namespace QuizApp.Blazor.Models.Quiz
+namespace QuizApp.Shared.Models.Quiz
 {
-    public class QuizQuestion
+    public class QuizQuestionDto
     {
         [JsonProperty("id")]
         public int Id { get; set; }

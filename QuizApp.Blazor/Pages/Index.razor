@@ -1,9 +1,7 @@
 ﻿@page "/"
 @using System.Text.Json;
 @using Newtonsoft.Json;
-@using QuizApp.Blazor.Models;
 @using System.Text.RegularExpressions;
-@using QuizApp.Blazor.Models.Quiz;
 @using QuizApp.Blazor.Services;
 
 @*<Quiz></Quiz>*@
@@ -11,8 +9,8 @@
 <button @onclick="GetQuestions">Get Questions</button>
 
 @code {
-    [Inject] 
-    public IChatGptService? _chatGptService { get; set; }
+    // [Inject] 
+    // public IChatGptService? _chatGptService { get; set; }
     private string input = "stockholm";
     private void GetQuestions()
     {
@@ -22,6 +20,6 @@
 
         //var quizquestions = JsonConvert.DeserializeObject<QuizList>(content);
         //var quizquestions2 = JsonConvert.DeserializeObject<QuizList>(content2);
-        _chatGptService.QuizFromGptAsync(input);
+        // _chatGptService.QuizFromGptAsync(input);
     }
 }

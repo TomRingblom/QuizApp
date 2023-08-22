@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace QuizApp.Blazor.Models.ChatGpt
+namespace QuizApp.Shared.Models.ChatGpt
 {
     public class ChatGptResponse
     {

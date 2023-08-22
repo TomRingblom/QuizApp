@@ -5,7 +5,9 @@ VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuizApp.Blazor", "QuizApp.Blazor\QuizApp.Blazor.csproj", "{5C2423F0-AD58-406D-8B42-EA679CC3E431}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizApp.Api", "QuizApp.Api\QuizApp.Api.csproj", "{A9357550-B1C5-42CC-9917-F5A02DABF05D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QuizApp.Api", "QuizApp.Api\QuizApp.Api.csproj", "{A9357550-B1C5-42CC-9917-F5A02DABF05D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizApp.Shared", "QuizApp.Shared\QuizApp.Shared.csproj", "{70D4354D-2E26-4524-A65B-5C192CCDB86D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{A9357550-B1C5-42CC-9917-F5A02DABF05D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9357550-B1C5-42CC-9917-F5A02DABF05D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9357550-B1C5-42CC-9917-F5A02DABF05D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70D4354D-2E26-4524-A65B-5C192CCDB86D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70D4354D-2E26-4524-A65B-5C192CCDB86D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70D4354D-2E26-4524-A65B-5C192CCDB86D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70D4354D-2E26-4524-A65B-5C192CCDB86D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
