@@ -1,4 +1,5 @@
 ﻿@page "/quiz"
+@using Microsoft.AspNetCore.Components.Forms
 @using QuizApp.Blazor.Services;
 @using QuizApp.Shared.Models.Quiz;
 
@@ -29,7 +30,7 @@ else
         if(question != null && question.Options != null)
         {
             <h2>@question.Question</h2>
-            foreach (var option in question.Options)
+            @foreach (var option in question.Options)
             {
                 <button @onclick="() => Guess(option, question.Id)">@option</button>
             }
@@ -59,24 +60,6 @@ else
     {
         loading = true;
         questions = await _chatGptService.QuizFromGptAsync(input);
-        // var test = 0;
-        // questions = new List<QuizQuestionDto>()
-        // {
-        //     new QuizQuestionDto
-        //     {
-        //         Id = 1,
-        //         Question = "Vem är jag?",
-        //         Options = new List<string> { "Tom", "Otto", "Janne" },
-        //         CorrectAnswer = "Tom"
-        //     },
-        //     new QuizQuestionDto
-        //     {
-        //         Id = 2,
-        //         Question = "Vilken färg är solen?",
-        //         Options = new List<string> { "Rosa", "Svart", "Gul" },
-        //         CorrectAnswer = "Gul"
-        //     }
-        // };
         runGame = true;
         loading = false;
         StateHasChanged();

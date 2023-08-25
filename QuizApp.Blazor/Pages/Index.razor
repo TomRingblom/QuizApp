@@ -4,22 +4,57 @@
 @using System.Text.RegularExpressions;
 @using QuizApp.Blazor.Services;
 
-@*<Quiz></Quiz>*@
 <Navbar/>
-<button @onclick="GetQuestions">Get Questions</button>
+
+<div>
+    @foreach(var button in buttons)
+    {
+        <button class="@button.Value" @onclick="() => GetQuestions(button.Key)">@button.Key</button>
+    }
+</div>
+<button @onclick="GetAnswer">Submit</button>
 
 @code {
-    // [Inject] 
-    // public IChatGptService? _chatGptService { get; set; }
-    private string input = "stockholm";
-    private void GetQuestions()
+    private Dictionary<int, string>? buttons;
+    private int chosen = 0;
+
+    private const string Btn = "quiz-button";
+    private const string BtnChosen = "quiz-button-chosen";
+
+    protected override void OnInitialized()
     {
-        //string content = "{\n    \"quizQuestions\": [\n        {\n            \"id\": 1,\n            \"question\": \"Which of the following platforms does Episerver support?\",\n            \"options\": [\"PHP\", \"ASP.NET\", \"JavaScript\"],\n            \"correctAnswer\": \"ASP.NET\"\n        },\n        {\n            \"id\": 2,\n            \"question\": \"What is the name of the tool that is used to develop Episerver websites?\",\n            \"options\": [\"Visual Studio\", \"Xcode\", \"Dreamweaver\"],\n            \"correctAnswer\": \"Visual Studio\"\n        },\n        {\n            \"id\": 3,\n            \"question\": \"What type of database does Episerver use?\",\n            \"options\": [\"MySQL\", \"Oracle\", \"MS SQL Server\"],\n            \"correctAnswer\": \"MS SQL Server\"\n        },\n        {\n            \"id\": 4,\n            \"question\": \"Which of the following is NOT a feature of Episerver?\",\n            \"options\": [\"eCommerce\", \"Content Management\", \"Data Analysis\"],\n            \"correctAnswer\": \"Data Analysis\"\n        },\n        {\n            \"id\": 5,\n            \"question\": \"Episerver is a _____ platform?\",\n            \"options\": [\"cloud-based\", \"desktop-based\", \"software-based\"],\n            \"correctAnswer\": \"software-based\"\n        }\n    ]\n}";
+        buttons = new Dictionary<int, string>
+        {
+            { 1, Btn },
+            { 2, Btn },
+            { 3, Btn }
+        };
+    }
 
-        //string content2 = "\n\n{\n    \"quizQuestions\": [\n        {\n            \"id\": 1,\n            \"question\": \"What is Episerver?\",\n            \"options\": [\"A content management system\", \"A web hosting service\", \"A database service\"],\n            \"correctAnswer\": \"A content management system\"\n        },\n        {\n            \"id\": 2,\n            \"question\": \"What type of license does Episerver offer?\",\n            \"options\": [\"Open source\", \"Freemium\", \"Paid\"],\n            \"correctAnswer\": \"Paid\"\n        },\n        {\n            \"id\": 3,\n            \"question\": \"What type of applications can be built with Episerver?\",\n            \"options\": [\"Web applications\", \"Mobile applications\", \"Desktop applications\"],\n            \"correctAnswer\": \"Web applications\"\n        },\n        {\n            \"id\": 4,\n            \"question\": \"What language does Episerver use?\",\n            \"options\": [\"C#\", \"Java\", \"PHP\"],\n            \"correctAnswer\": \"C#\"\n        },\n        {\n            \"id\": 5,\n            \"question\": \"What type of support does Episerver offer?\",\n            \"options\": [\"24/7\", \"Business hours\", \"No support\"],\n            \"correctAnswer\": \"Business hours\"\n        }\n    ]\n}";
+    private void GetQuestions(int number)
+    {
+        foreach (var button in buttons!.Keys)
+        {
+            if(button == number)
+            {
+                buttons[button] = BtnChosen;
+            }
+            else
+            {
+                buttons[button] = Btn;
+            }
+        }
 
-        //var quizquestions = JsonConvert.DeserializeObject<QuizList>(content);
-        //var quizquestions2 = JsonConvert.DeserializeObject<QuizList>(content2);
-        // _chatGptService.QuizFromGptAsync(input);
+        chosen = buttons!
+            .Where(b => b.Value == BtnChosen)
+            .Select(k => k.Key)
+            .FirstOrDefault();
+
+        StateHasChanged();
+    }
+
+    private void GetAnswer()
+    {
+        Console.WriteLine(chosen);
     }
 }

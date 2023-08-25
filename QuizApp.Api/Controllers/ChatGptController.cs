@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -17,7 +16,10 @@ namespace QuizApp.Api.Controllers
         private readonly QuizDbContext _dbContext;
         private readonly string _apiKey;
 
-        public ChatGptController(IHttpClientFactory httpClientFactory, IOptions<ChatGptOptions> options, QuizDbContext dbContext)
+        public ChatGptController(
+            IHttpClientFactory httpClientFactory, 
+            IOptions<ChatGptOptions> options, 
+            QuizDbContext dbContext)
         {
             _httpClientFactory = httpClientFactory;
             _apiKey = options.Value.ApiKey;
@@ -27,28 +29,13 @@ namespace QuizApp.Api.Controllers
         [HttpGet(Name = nameof(GetQuiz))]
         public async Task<ActionResult<QuizList>> GetQuiz(string query)
         {
-            var gameExist = await _dbContext.QuizGames.Where(x => x.Name == query).CountAsync();
+            var gameExist = await _dbContext.QuizGames
+                .Where(x => x.Name == query)
+                .CountAsync();
 
             if (gameExist > 0)
             {
-                var game = await _dbContext.QuizGames.Where(x => x.Name == query).FirstOrDefaultAsync();
-                var questions = await _dbContext.QuizQuestions.Where(x => x.GameId == game!.Id).ToListAsync();
-
-                var questionList = new List<QuizQuestionDto>();
-                var index = 1;
-                foreach(var question in questions)
-                {
-                    questionList.Add(new QuizQuestionDto
-                    {
-                        Id = index,
-                        Question = question.Question,
-                        Options = question.Options.Split(",").ToList(),
-                        CorrectAnswer = question.CorrectAnswer
-                    });
-                    index++;
-                }
-
-                return Ok(questionList);
+                return Ok(await GetQuizFromDatabase(query));
             }
 
             var client = _httpClientFactory.CreateClient("ChatGptClient");
@@ -62,42 +49,83 @@ namespace QuizApp.Api.Controllers
                 temperature = 0.7
             };
 
-            var responseContent = await client.PostAsync(client.BaseAddress, new StringContent(JsonConvert.SerializeObject(jsonContent), Encoding.UTF8, "application/json"));
+            var responseContent = await client.PostAsync(
+                client.BaseAddress, 
+                new StringContent(JsonConvert.SerializeObject(jsonContent), 
+                Encoding.UTF8, 
+                "application/json"));
 
             var resContext = await responseContent.Content.ReadAsStringAsync();
 
-            var data = JsonConvert.DeserializeObject<ChatGptResponse>(resContext);
-            var quiz = JsonConvert.DeserializeObject<QuizList>(data.Choices[0].Text);
+            var data = JsonConvert
+                .DeserializeObject<ChatGptResponse>(resContext);
+
+            var quiz = JsonConvert
+                .DeserializeObject<QuizList>(data.Choices[0].Text);
 
 
-            if(gameExist < 1 && quiz != null && quiz.QuizQuestions != null)
+            if(quiz != null && quiz.QuizQuestions != null)
             {
-                await _dbContext.QuizGames.AddAsync(new QuizGame
-                {
-                    Name = query
-                });
-
-                await _dbContext.SaveChangesAsync();
-
-                var game = await _dbContext.QuizGames
-                    .Where(x => x.Name == query)
-                    .FirstOrDefaultAsync();
-
-                foreach (var item in quiz.QuizQuestions)
-                {
-                    await _dbContext.QuizQuestions.AddAsync(new QuizQuestion
-                    {
-                        Question = item.Question,
-                        Options = string.Join(",", item.Options),
-                        GameId = game.Id,
-                        CorrectAnswer = item.CorrectAnswer
-                    });
-                }
-
-                await _dbContext.SaveChangesAsync();
+                await SaveQuizToDatabase(quiz, query);
             }
 
             return Ok(quiz.QuizQuestions);
+        }
+
+        private async Task<List<QuizQuestionDto>> GetQuizFromDatabase(string query)
+        {
+            var game = await _dbContext.QuizGames
+                .Where(x => x.Name == query)
+                .FirstOrDefaultAsync();
+
+            var questions = await _dbContext.QuizQuestions
+                .Where(x => x.GameId == game!.Id)
+                .ToListAsync();
+
+            var questionList = new List<QuizQuestionDto>();
+
+            var index = 1;
+            foreach (var question in questions)
+            {
+                questionList.Add(new QuizQuestionDto
+                {
+                    Id = index,
+                    Question = question.Question,
+                    Options = question.Options.Split(",").ToList(),
+                    CorrectAnswer = question.CorrectAnswer
+                });
+                index++;
+            }
+
+            return questionList;
+        }
+
+        private async Task SaveQuizToDatabase(QuizList quizzes, string query)
+        {
+            await _dbContext.QuizGames.AddAsync(new QuizGame
+            {
+                Name = query
+            });
+
+            await _dbContext.SaveChangesAsync();
+
+            var game = await _dbContext.QuizGames
+                .Where(x => x.Name == query)
+                .FirstOrDefaultAsync();
+
+            foreach (var item in quizzes.QuizQuestions!)
+            {
+                await _dbContext.QuizQuestions
+                    .AddAsync(new QuizQuestion
+                    {
+                        Question = item.Question,
+                        Options = string.Join(",", item.Options),
+                        GameId = game!.Id,
+                        CorrectAnswer = item.CorrectAnswer
+                    });
+            }
+
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

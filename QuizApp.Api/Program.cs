@@ -24,13 +24,6 @@ services.Configure<ChatGptOptions>(
                 options => configuration.GetSection(ChatGptOptions.ChatGpt)
                     .Bind(options));
 
-//services.AddCors(options =>
-//{
-//    options.AddPolicy("Open", builder => builder
-//        .AllowAnyOrigin()
-//        .AllowAnyHeader()
-//        .AllowAnyMethod());
-//});
 
 var app = builder.Build();
 
