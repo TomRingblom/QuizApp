@@ -30,10 +30,12 @@ else
         if(question != null && question.Options != null)
         {
             <h2>@question.Question</h2>
-            @foreach (var option in question.Options)
+            @*@foreach (var option in question.Options)
             {
                 <button @onclick="() => Guess(option, question.Id)">@option</button>
-            }
+            }*@
+
+            <ToggleButton Options="question.Options" OnSubmit="(args) => SubmitHandler(args)"/>
         }
     }
     else
@@ -65,10 +67,10 @@ else
         StateHasChanged();
     }
 
-    private void Guess(string guess, int id)
+    private void SubmitHandler(string guess)
     {
         var isCorrect = questions
-            .Where(x => x.Id == id)
+            .Where(x => x.Id == questionId)
             .FirstOrDefault()?.CorrectAnswer == guess;
 
         questionId++;
@@ -82,7 +84,7 @@ else
             answers.Add(false);
         }
 
-        if(answers.Count == questions.Count())
+        if (answers.Count == questions.Count())
         {
             runGame = false;
         }

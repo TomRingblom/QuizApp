@@ -69,7 +69,7 @@ namespace QuizApp.Api.Controllers
                 await SaveQuizToDatabase(quiz, query);
             }
 
-            return Ok(quiz.QuizQuestions);
+            return Ok(await GetQuizFromDatabase(query));
         }
 
         private async Task<List<QuizQuestionDto>> GetQuizFromDatabase(string query)
