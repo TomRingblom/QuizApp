@@ -7,7 +7,8 @@ namespace QuizApp.Api.Models
         public QuizDbContext(DbContextOptions<QuizDbContext> options) : base(options)
         {}
 
-        public DbSet<QuizQuestion> QuizQuestions { get; set; }
-        public DbSet<QuizGame> QuizGames { get; set; }
+        public DbSet<QuizGame> Games { get; set; }
+        public DbSet<QuizQuestion> Questions { get; set; }
+        public DbSet<QuizQuestionOption> Options { get; set; }
     }
 }

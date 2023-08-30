@@ -29,7 +29,7 @@ namespace QuizApp.Api.Controllers
         [HttpGet(Name = nameof(GetQuiz))]
         public async Task<ActionResult<QuizList>> GetQuiz(string query)
         {
-            var gameExist = await _dbContext.QuizGames
+            var gameExist = await _dbContext.Games
                 .Where(x => x.Name == query)
                 .CountAsync();
 
@@ -74,11 +74,11 @@ namespace QuizApp.Api.Controllers
 
         private async Task<List<QuizQuestionDto>> GetQuizFromDatabase(string query)
         {
-            var game = await _dbContext.QuizGames
+            var game = await _dbContext.Games
                 .Where(x => x.Name == query)
                 .FirstOrDefaultAsync();
 
-            var questions = await _dbContext.QuizQuestions
+            var questions = await _dbContext.Questions
                 .Where(x => x.GameId == game!.Id)
                 .ToListAsync();
 
@@ -87,11 +87,16 @@ namespace QuizApp.Api.Controllers
             var index = 1;
             foreach (var question in questions)
             {
+                var options = await _dbContext.Options
+                    .Where(o => o.QuestionId == question.Id)
+                    .Select(o => o.Option)
+                    .ToListAsync();
+
                 questionList.Add(new QuizQuestionDto
                 {
                     Id = index,
                     Question = question.Question,
-                    Options = question.Options.Split(",").ToList(),
+                    Options = options,
                     CorrectAnswer = question.CorrectAnswer
                 });
                 index++;
@@ -102,27 +107,41 @@ namespace QuizApp.Api.Controllers
 
         private async Task SaveQuizToDatabase(QuizList quizzes, string query)
         {
-            await _dbContext.QuizGames.AddAsync(new QuizGame
+            await _dbContext.Games.AddAsync(new QuizGame
             {
                 Name = query
             });
 
             await _dbContext.SaveChangesAsync();
 
-            var game = await _dbContext.QuizGames
+            var game = await _dbContext.Games
                 .Where(x => x.Name == query)
                 .FirstOrDefaultAsync();
 
-            foreach (var item in quizzes.QuizQuestions!)
+            foreach (var question in quizzes.QuizQuestions!)
             {
-                await _dbContext.QuizQuestions
+                await _dbContext.Questions
                     .AddAsync(new QuizQuestion
                     {
-                        Question = item.Question,
-                        Options = string.Join(",", item.Options),
+                        Question = question.Question,
                         GameId = game!.Id,
-                        CorrectAnswer = item.CorrectAnswer
+                        CorrectAnswer = question.CorrectAnswer
                     });
+
+                await _dbContext.SaveChangesAsync();
+
+                var addedQuestion = await _dbContext.Questions
+                    .Where(q => q.Question == question.Question)
+                    .FirstOrDefaultAsync();
+
+                foreach(var option in question.Options)
+                {
+                    await _dbContext.Options.AddAsync(new QuizQuestionOption
+                    {
+                        Option = option,
+                        QuestionId = addedQuestion.Id
+                    });
+                }
             }
 
             await _dbContext.SaveChangesAsync();
