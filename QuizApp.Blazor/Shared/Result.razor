@@ -1,0 +1,26 @@
+﻿@using QuizApp.Shared.Models.Quiz;
+
+@if(Results == null)
+{
+    <div>Loading...</div>
+}
+else
+{
+    @foreach(var result in Results)
+    {
+        <div>Fråga: @result.Question.Question</div>
+        <div>
+            @foreach(var option in result.Question.Options)
+            {
+                <p>@option</p>
+            }
+        </div>
+        <div>Ditt svar: @result.Answer var @(result.Answer == result.Question.CorrectAnswer ? "rätt" : "fel")</div>
+        <br/>
+    }
+}
+
+@code {
+    [Parameter]
+    public List<QuizResult> Results { get; set; } = new();
+}

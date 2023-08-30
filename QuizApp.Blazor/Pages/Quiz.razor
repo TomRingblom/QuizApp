@@ -40,10 +40,7 @@ else
     }
     else
     {
-        var result = answers.Where(a => a == true).Count();
-
-        <h2>Resultat: @result/@questions.Count()</h2>
-        <button @onclick="PlayAgain">Spela igen</button>
+        <Result Results="answers" />
     }
 }
 
@@ -56,7 +53,7 @@ else
     private bool runGame = true;
     private bool loading = false;
     private string inputValue = "";
-    private List<bool> answers = new();
+    private List<QuizResult> answers = new();
 
     private async void GetQuiz(string input)
     {
@@ -69,20 +66,17 @@ else
 
     private void SubmitHandler(string guess)
     {
-        var isCorrect = questions
+        var question = questions
             .Where(x => x.Id == questionId)
-            .FirstOrDefault()?.CorrectAnswer == guess;
+            .FirstOrDefault();
 
         questionId++;
 
-        if (isCorrect)
+        answers.Add(new QuizResult
         {
-            answers.Add(true);
-        }
-        else
-        {
-            answers.Add(false);
-        }
+            Answer = guess,
+            Question = question
+        });
 
         if (answers.Count == questions.Count())
         {
