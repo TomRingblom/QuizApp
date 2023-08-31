@@ -1,10 +1,8 @@
 ﻿using QuizApp.Shared.Models.Quiz;
 
-namespace QuizApp.Blazor.Services
+namespace QuizApp.Blazor.Services;
+
+public interface IChatGptService
 {
-    public interface IChatGptService
-    {
-        public Task<IEnumerable<QuizQuestionDto>> QuizFromGptAsync(string query);
-        public bool SaveQuizToJson();
-    }
+    public Task<IEnumerable<QuizQuestionDto>> QuizFromGptAsync(string query);
 }

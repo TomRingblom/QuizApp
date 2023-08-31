@@ -30,64 +30,11 @@ else
         if(question != null && question.Options != null)
         {
             <h2>@question.Question</h2>
-            @*@foreach (var option in question.Options)
-            {
-                <button @onclick="() => Guess(option, question.Id)">@option</button>
-            }*@
-
             <ToggleButton Options="question.Options" OnSubmit="(args) => SubmitHandler(args)"/>
         }
     }
     else
     {
         <Result Results="answers" />
-    }
-}
-
-@code {
-    [Inject]
-    public IChatGptService? _chatGptService { get; set; }
-    private IEnumerable<QuizQuestionDto> questions;
-
-    private int questionId = 1;
-    private bool runGame = true;
-    private bool loading = false;
-    private string inputValue = "";
-    private List<QuizResult> answers = new();
-
-    private async void GetQuiz(string input)
-    {
-        loading = true;
-        questions = await _chatGptService.QuizFromGptAsync(input);
-        runGame = true;
-        loading = false;
-        StateHasChanged();
-    }
-
-    private void SubmitHandler(string guess)
-    {
-        var question = questions
-            .Where(x => x.Id == questionId)
-            .FirstOrDefault();
-
-        questionId++;
-
-        answers.Add(new QuizResult
-        {
-            Answer = guess,
-            Question = question
-        });
-
-        if (answers.Count == questions.Count())
-        {
-            runGame = false;
-        }
-    }
-
-    private void PlayAgain()
-    {
-        questionId = 1;
-        runGame = true;
-        answers = new();
     }
 }
