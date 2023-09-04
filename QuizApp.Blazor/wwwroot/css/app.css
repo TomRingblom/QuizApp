@@ -1,3 +1,26 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Roboto&display=swap");
+
+* {
+    font-family: Roboto;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #e5e5e5;
+}
+
+.container {
+    border-radius: 10px;
+    width: 80%;
+    height: 20rem;
+    margin: 0 auto;
+    margin-top: 50px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    padding: 10px;
+}
+
 h1:focus {
     outline: none;
 }
@@ -29,26 +52,4 @@ h1:focus {
 
 .blazor-error-boundary::after {
     content: "An error has occurred."
-}
-
-.quiz-button {
-    background-color: forestgreen;
-    border: none;
-    color: white;
-    padding: 10px;
-    text-align: center;
-    text-decoration: none;
-    font-size: 16px;
-    border-radius: 5px;
-}
-
-.quiz-button-chosen {
-    background-color: chocolate;
-    border: none;
-    color: white;
-    padding: 10px;
-    text-align: center;
-    text-decoration: none;
-    font-size: 16px;
-    border-radius: 5px;
 }

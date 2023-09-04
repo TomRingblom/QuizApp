@@ -5,8 +5,6 @@
 
 <Navbar />
 
-<h1>Quiz Game</h1>
-
 @if(questions == null)
 {
     if (loading)
@@ -29,8 +27,12 @@ else
 
         if(question != null && question.Options != null)
         {
-            <h2>@question.Question</h2>
-            <ToggleButton Options="question.Options" OnSubmit="(args) => SubmitHandler(args)"/>
+            <div class="container">
+                <div class="row">
+                    <h2>@question.Question</h2>
+                </div>
+                <ToggleButton Options="question.Options" OnSubmit="(args) => SubmitHandler(args)"/>
+            </div>
         }
     }
     else

@@ -18,4 +18,8 @@
     <ProjectReference Include="..\QuizApp.Shared\QuizApp.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Styles\" />
+  </ItemGroup>
+
 </Project>

@@ -14,7 +14,7 @@ public partial class ToggleButton
     //private int chosen = 0;
     private string answer = "";
     private const string Btn = "quiz-button";
-    private const string BtnChosen = "quiz-button-chosen";
+    private const string BtnChosen = $"{Btn} chosen";
     protected override void OnInitialized()
     {
         buttons = ResetButtons();

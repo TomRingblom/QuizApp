@@ -1,11 +1,17 @@
-﻿<div>
+﻿<div class="quiz-buttons">
     @foreach (var button in buttons!)
     {
         var option = Options[button.Key - 1];
-        <button class="@button.Value" @onclick="() => Choice(button.Key, option)">@button.Key. @option</button>
+        <button 
+            class="@button.Value" 
+            @onclick="() => Choice(button.Key, option)">
+                @option
+        </button>
     }
 </div>
 
-<button @onclick="InvokeOnSubmit">Submit</button>
+<div class="row">
+    <button class="quiz-submit" @onclick="InvokeOnSubmit">Submit</button>
+</div>
 
 
