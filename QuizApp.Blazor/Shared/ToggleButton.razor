@@ -1,17 +1,39 @@
 ﻿<div class="quiz-buttons">
     @foreach (var button in buttons!)
     {
-        var option = Options[button.Key - 1];
-        <button 
-            class="@button.Value" 
-            @onclick="() => Choice(button.Key, option)">
-                @option
-        </button>
+        var option = Options![button.Key - 1];
+
+        if(!IsValidated)
+        {
+            
+            <button 
+                class="@button.Value" 
+                @onclick="() => Choice(button.Key, option)">
+                    @option
+            </button>
+        }
+        else
+        {
+            if (answer == Correct && answer == option)
+            {
+                <button class="quiz-button-correct" disabled>@option <span class="bi bi-check-circle"></span></button>
+            }
+            else if(option == Correct)
+            {
+                <button class="quiz-button-correct" disabled>@option <span class="bi bi-check-circle"></span></button>
+            }
+            else if (answer == option)
+            {
+                <button class="quiz-button-incorrect" disabled>@option <span class="bi bi-slash-circle"></span></button>
+            }
+            else
+            {
+                <button class="quiz-button" disabled>@option</button>
+            }
+        }
     }
 </div>
 
 <div class="row">
-    <button class="quiz-submit" @onclick="InvokeOnSubmit">Submit</button>
+    <button @attributes="@attributes" @onclick="InvokeOnSubmit">Next</button>
 </div>
-
-

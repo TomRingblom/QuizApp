@@ -12,6 +12,7 @@ namespace QuizApp.Blazor.Pages
         private IEnumerable<QuizQuestionDto>? questions;
         private int questionId = 1;
         private bool runGame = true;
+        private bool isValidated = false;
         private bool loading = false;
         private string inputValue = "";
         private List<QuizResult> answers = new();
@@ -29,21 +30,26 @@ namespace QuizApp.Blazor.Pages
         {
             if(questions != null)
             {
-                var question = questions.Where(x => x.Id == questionId).FirstOrDefault();
-                questionId++;
-                answers.Add(new QuizResult { Answer = guess, Question = question });
+                var question = questions
+                    .Where(x => x.Id == questionId)
+                    .FirstOrDefault();
+
+                if(isValidated)
+                {
+                    questionId++;
+                    answers.Add(new QuizResult { Answer = guess, Question = question });
+                    isValidated = false;
+                }
+                else
+                {
+                    isValidated = true;
+                }
+
                 if (answers.Count == questions.Count())
                 {
                     runGame = false;
                 }
             }
-        }
-
-        private void PlayAgain()
-        {
-            questionId = 1;
-            runGame = true;
-            answers = new();
         }
     }
 }

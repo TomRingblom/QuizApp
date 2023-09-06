@@ -31,7 +31,11 @@ else
                 <div class="row">
                     <h2>@question.Question</h2>
                 </div>
-                <ToggleButton Options="question.Options" OnSubmit="(args) => SubmitHandler(args)"/>
+                <ToggleButton 
+                    Options="question.Options"
+                    Correct="@question.CorrectAnswer"
+                    IsValidated="isValidated" 
+                    OnSubmit="(args) => SubmitHandler(args)"/>
             </div>
         }
     }
