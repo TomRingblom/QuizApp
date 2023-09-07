@@ -11,6 +11,7 @@ namespace QuizApp.Blazor.Pages
 
         private IEnumerable<QuizQuestionDto>? questions;
         private int questionId = 1;
+        private int progress = 0;
         private bool runGame = true;
         private bool isValidated = false;
         private bool loading = false;
@@ -23,6 +24,7 @@ namespace QuizApp.Blazor.Pages
             questions = await ChatGptService!.QuizFromGptAsync(input);
             runGame = true;
             loading = false;
+            progress = CalculateProgress(questionId, questions.Count());
             StateHasChanged();
         }
 
@@ -38,6 +40,7 @@ namespace QuizApp.Blazor.Pages
                 {
                     questionId++;
                     answers.Add(new QuizResult { Answer = guess, Question = question });
+                    progress = CalculateProgress(questionId, questions.Count());
                     isValidated = false;
                 }
                 else
@@ -50,6 +53,11 @@ namespace QuizApp.Blazor.Pages
                     runGame = false;
                 }
             }
+        }
+
+        private int CalculateProgress(int complete, int total)
+        {
+            return (int)Math.Round((double)(100 * complete) / total);
         }
     }
 }

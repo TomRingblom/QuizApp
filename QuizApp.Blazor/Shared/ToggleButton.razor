@@ -20,7 +20,7 @@
             }
             else if(option == Correct)
             {
-                <button class="quiz-button-correct" disabled>@option <span class="bi bi-check-circle"></span></button>
+                <button class="quiz-button-correct" disabled>@option</button>
             }
             else if (answer == option)
             {
@@ -35,5 +35,5 @@
 </div>
 
 <div class="row">
-    <button @attributes="@attributes" @onclick="InvokeOnSubmit">Next</button>
+    <button @attributes="@attributes" @onclick="InvokeOnSubmit">Next <span class="bi bi-arrow-right-circle"></span></button>
 </div>

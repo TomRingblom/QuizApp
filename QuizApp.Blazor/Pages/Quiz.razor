@@ -28,8 +28,9 @@ else
         if(question != null && question.Options != null)
         {
             <div class="container">
+                <ProgressBar Progress="progress"></ProgressBar>
                 <div class="row">
-                    <h2>@question.Question</h2>
+                    <h1 class="quiz-question">@question.Question</h1>
                 </div>
                 <ToggleButton 
                     Options="question.Options"

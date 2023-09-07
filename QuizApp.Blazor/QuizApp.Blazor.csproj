@@ -22,4 +22,12 @@
     <Folder Include="Styles\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Shared\ProgressBar.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Shared\ProgressBar.razor" />
+  </ItemGroup>
+
 </Project>
